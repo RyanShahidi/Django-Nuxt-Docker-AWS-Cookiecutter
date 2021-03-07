@@ -127,9 +127,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Custom project files
-.env.dev
-.env.prod
 
 
 
