@@ -6,6 +6,7 @@ __________
 * Django
 * Django rest framework
 * Nuxt
+* Buefy
 * Docker - Managed with Docker compose
 * Nginx
 * Postgres
@@ -17,9 +18,10 @@ _____
 * Djoser account auth configuration
 * Buildspec files for easy deployment using codepipeline
 * Dockerrun.aws.json file for easy deployment to elastic beanstalk. Configured for t2.micro EC2 instance, update memory allocation as needed. 
+* Buefy for the component library
 
 # Set-up
-To walk through set-up of this project we will create a sample application called Jarvis. This application will only be hosted locally, but the steps for projects that will eventually go to development are the same. 
+To walk through set-up of this project we will create a sample application called Jarvis. This application will only be hosted locally, but the steps for projects that will eventually go to production are the same. 
 
 ### 1) Downloading repo
 ___
@@ -47,14 +49,14 @@ If this app was going to be used for production and hosted at, for example, goog
 
 ### 2) Initial configuration
 ___
-At default, the cookiecutter app includes the two environment files that are used by your app. These were not initially included in the .gitignore file to include them during generation to give default values and must be updated. In the .gitignore file, add the following info to prevent these from being in the git history:
+By default, the cookiecutter app includes the two environment files that are used by your app. These were not initially included in the .gitignore file to allow them to be created during generation and, subsequently, the .gitignore file must be updated. In the .gitignore file, add the following info to prevent these files from being in the git history:
 
 ```
 # Custom project files
 .env.dev
 .env.prod
 ```
-After adding these to the gitignore, it is highly suggested to start a git repo to track your changes. The app can now be built and run using docker-compose. A more detailed overview is in the generated readme file. 
+After adding these to the gitignore, it is highly suggested to start a git repo to track your changes. The app can now be built and run using docker-compose. A more detailed overview of different commands and the project structure is in the generated README file. 
 
 ### 3) Common Error
 ___
@@ -67,4 +69,4 @@ This is likely an End of Line Sequence error, with the docker files in the CRLF 
 
 ### 4) Deploying to AWS
 ___
-When your app is ready for deployment to AWS, follow the instructions in [the wiki](https://github.com/RyanShahidi/Django-Nuxt-Docker-AWS-Cookiecutter/wiki) for configuration and deployment. Note that these instructions might be out-of-date.
+When your app is ready for deployment to AWS, follow the instructions in [the wiki](https://github.com/RyanShahidi/Django-Nuxt-Docker-AWS-Cookiecutter/wiki) for configuration and deployment. Note that these instructions are currently incomplete and possibly out-of-date, but should provide you with enough information to deploy the app.
