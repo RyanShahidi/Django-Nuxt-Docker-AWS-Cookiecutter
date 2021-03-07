@@ -1,0 +1,71 @@
+version: "2.4"
+
+services:
+  postgres:
+    image: postgres:12-alpine
+    networks:
+      - main
+    ports:
+      - "5434:5432"
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    command: gunicorn backend.wsgi:application --bind 0.0.0.0:8000 --reload
+    volumes:
+      - ./backend/:/usr/src/app/
+      - static_volume:/usr/src/app/static
+      - media_volume:/usr/src/app/media
+    networks:
+      - main
+    ports:
+      - "8000:8000"
+      - "8888:8888"
+    env_file:
+      - .env.dev
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: docker/Dockerfile.dev
+    volumes:
+      - "./frontend:/app/"
+      - "/app/node_modules"
+    ports:
+      - "3001:3000"
+    depends_on:
+      - backend
+    networks:
+      - main
+
+  nginx:
+    build:
+      context: ./nginx/dev
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+    volumes:
+      - ./nginx/dev/dev.conf:/etc/nginx/nginx.conf:ro
+      - static_volume:/usr/src/app/static
+      - media_volume:/usr/src/app/media
+    networks:
+      - main
+
+volumes:
+  pg-data:
+  static_volume:
+  media_volume:
+
+networks:
+  main:
+    driver: bridge

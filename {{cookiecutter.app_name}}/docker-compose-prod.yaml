@@ -1,0 +1,48 @@
+version: '3.7'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: docker/prod/Dockerfile.prod
+    command: gunicorn backend.wsgi:application --bind 0.0.0.0:8000
+    entrypoint: ./docker/prod/entrypoint-prod.sh
+    volumes:
+      - ./backend:/code
+    networks:
+      - main
+    ports:
+      - "8000:8000"
+      - "8888:8888"
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: docker/prod/Dockerfile.prod
+    volumes:
+      - "./frontend:/app/"
+      - "/app/node_modules"
+    ports:
+      - "3001:3000"
+    depends_on:
+      - backend
+    networks:
+      - main
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: prod/Dockerfile
+    volumes:
+      - ./nginx/prod/prod.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    networks:
+      - main
+    depends_on:
+      - backend
+      - frontend
+volumes:
+  static_volume:
+  media_volume:
+networks:
+  main:
+    driver: bridge
