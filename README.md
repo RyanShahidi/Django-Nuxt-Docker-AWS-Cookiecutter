@@ -70,3 +70,48 @@ This is likely an End of Line Sequence error, with the docker files in the CRLF 
 ### 4) Deploying to AWS
 ___
 When your app is ready for deployment to AWS, follow the instructions in [the wiki](https://github.com/RyanShahidi/Django-Nuxt-Docker-AWS-Cookiecutter/wiki) for configuration and deployment. Note that these instructions are currently incomplete and possibly out-of-date, but should provide you with enough information to deploy the app.
+
+# Deploying to Raspberry Pi
+It is also possible to deploy this package to a raspberry pi. When that is desired, several changes to the code-base must be made.
+### 1) Change Postgres Version
+___
+
+In the docker-compose.yml file the postgres image must be changed to the following version. Postgres 12 will have occasional issues when running on the RPi.
+```
+image: postgres:10-alpine
+```
+
+### 2) Update Dockerfile images
+___
+The default dockerfiles for the project are pulled from ECR to help elimiate docker-hub pull limits. For deploying to RPi, this must be changed as these images are not configured to work on an ARM CPU. 
+
+Backend:
+```
+FROM python:3.8
+```
+Frontend:
+```
+FROM node:14.15.5
+```
+NGINX:
+```
+FROM nginx:1.19.7-alpine
+```
+
+### 3) Autostart on RPi
+___
+Generally, it will be desired to auto-start the docker containers on the RPi whenever it boots. This is easy to do, and it is recommended to configure this step only after the docker files have been tested. For all of the different services in the docker-compose.yml file, add the following line:
+
+```
+restart: always
+```
+
+This will ensure that the containers will start when the RPi is booted. 
+
+### 4) Access GPIO pins
+___
+To configure access to the GPIO pins, the functions will generally be completed in the backend. To give the backend docker container access, add the following line to the docker-compose.yml
+
+```
+privileged: true
+```
